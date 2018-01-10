@@ -1,20 +1,57 @@
 /**
- * My commodity trading network
+ * My property trading network
  */
 namespace org.acme.biznet
-asset Commodity identified by tradingSymbol {
-    o String tradingSymbol
-    o String description
-    o String mainExchange
-    o Double quantity
-    --> Trader owner
+
+enum SaleListingState {
+  o FOR_SALE
+  o SOLD
 }
-participant Trader identified by tradeId {
-    o String tradeId
-    o String firstName
-    o String lastName
+
+asset Property identified by propertyID {
+  o String propertyID
+  o String description optional
+  o String location
+  --> Person currentOwner
+  --> Person[] pastOwners 
 }
-transaction Trade {
-    --> Commodity commodity
-    --> Trader newOwner
+
+asset PropertySaleListing identified by propertySaleListingID {
+  o String propertySaleListingID
+  o Double askingPrice
+  o SaleListingState state
+  --> Property propertyOnSale
+}
+
+asset SaleAgreement identified by saleID {
+  o String saleID
+  --> Person buyer
+  --> PropertySaleListing listing
+}
+
+asset MortgageValuation identified by valuationID {
+  o String valuationID
+  --> Property property
+  --> Lender evaluator
+  o Double amount
+}
+
+asset MortgageAgreement identified by mortgageID {
+  o String mortgageID
+  o Double amount
+  --> Person borrower
+  --> Lender lender
+  o String details
+  o DateTime date
+}
+
+participant Person identified by personID {
+  o String personID
+  o String name
+  o Double creditRating
+  o Double availableFunds
+}
+
+participant Lender extends Person {
+  o Double creditRatingThreshold
 }
