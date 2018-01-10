@@ -13,7 +13,7 @@ asset Property identified by propertyID {
   o String description optional
   o String location
   --> Person currentOwner
-  --> Person[] pastOwners 
+  --> Person[] pastOwners optional
 }
 
 asset PropertySaleListing identified by propertySaleListingID {
@@ -21,6 +21,7 @@ asset PropertySaleListing identified by propertySaleListingID {
   o Double askingPrice
   o SaleListingState state
   --> Property propertyOnSale
+  //add seller
 }
 
 asset SaleAgreement identified by saleID {
