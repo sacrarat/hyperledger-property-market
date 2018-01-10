@@ -21,7 +21,7 @@ asset PropertySaleListing identified by propertySaleListingID {
   o Double askingPrice
   o SaleListingState state
   --> Property propertyOnSale
-  //add seller
+  --> Person seller
 }
 
 asset SaleAgreement identified by saleID {
