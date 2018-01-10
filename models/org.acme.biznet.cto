@@ -55,3 +55,27 @@ participant Person identified by personID {
 participant Lender extends Person {
   o Double creditRatingThreshold
 }
+
+transaction RegisterForSale {
+  o String saleRegistrationID
+  --> Property property
+  --> Person seller
+  o Double askingPrice
+}
+
+transaction ConfirmPropertySale {
+  --> PropertySaleListing listing
+}
+
+transaction ValidateMortgage {
+  --> Lender lender
+  --> PropertySaleListing listing
+}
+
+transaction ConfirmMortgage {
+  o String details
+  o Boolean valid
+  o Double amount
+  --> Lender lender
+  --> PropertySaleListing listing
+}
