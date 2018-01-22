@@ -13,7 +13,7 @@ asset Property identified by propertyID {
   o String description optional
   o String location
   --> Person currentOwner
-  --> Person[] pastOwners optional
+  --> Person[] pastOwners //stored latest owner first, initialise empty array
 }
 
 asset PropertySaleListing identified by propertySaleListingID {
