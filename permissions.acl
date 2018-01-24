@@ -3,9 +3,9 @@
  */
 
 rule R1 {
-  description: "Property owner can only register a property for sale"
+  description: "Property owner can only update or delete a property"
   participant (m): "org.acme.biznet.Person"
-  operation: ALL
+  operation: CREATE, UPDATE, DELETE
   resource(v) : "org.acme.biznet.Property"
   condition: (v.currentOwner.getIdentifier()==m.getIdentifier())
   action: ALLOW
@@ -35,12 +35,30 @@ rule R4 {
   action: ALLOW
 }
 
+rule R5 {
+  description: "Property owner can create sale registration"
+  participant(m): "org.acme.biznet.Person"
+  operation: ALL
+  resource (v): "org.acme.biznet.PropertySaleListing"
+  condition: (v.propertyOnSale.currentOwner.getIdentifier()==m.getIdentifier())
+  action: ALLOW
+}
+
+// not sure if needed
+// rule R6 {
+//   description: "Every Person can read properties"
+//   participant: "org.acme.biznet.Person"
+//   operation: READ
+//   resource : "org.acme.biznet.Property"
+//   action: ALLOW
+// }
+
 rule Default {
-    description: "Allow all participants access to all resources"
-    participant: "ANY"
-    operation: ALL
-    resource: "org.acme.biznet.*"
-    action: ALLOW
+  description: "Allow all participants access to all resources"
+  participant: "ANY"
+  operation: ALL
+  resource: "org.acme.biznet.*"
+  action: ALLOW
 }
 
 rule SystemACL {
