@@ -1,6 +1,40 @@
 /**
- * Access control rules for tutorial-network
+ * Access control rules for property trading network
  */
+
+rule R1 {
+  description: "Property owner can only register a property for sale"
+  participant (m): "org.acme.biznet.Person"
+  operation: ALL
+  resource(v) : "org.acme.biznet.Property"
+  condition: (v.currentOwner.getIdentifier()==m.getIdentifier())
+  action: ALLOW
+}
+
+rule R2 {
+  description: "Person can only read mortgage valuation"
+  participant: "org.acme.biznet.Person"
+  operation: READ
+  resource: "org.acme.biznet.MortgageValuation"
+  action: ALLOW
+}
+
+rule R3 {
+  description: "Person can not create, delete or update mortgage valuation"
+  participant: "org.acme.biznet.Person"
+  operation: CREATE, DELETE, UPDATE
+  resource: "org.acme.biznet.MortgageValuation"
+  action: DENY
+}
+
+rule R4 {
+  description: "Lender can do everything with mortgage valuation"
+  participant: "org.acme.biznet.Lender"
+  operation: ALL
+  resource: "org.acme.biznet.MortgageValuation"
+  action: ALLOW
+}
+
 rule Default {
     description: "Allow all participants access to all resources"
     participant: "ANY"
