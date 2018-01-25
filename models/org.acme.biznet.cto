@@ -69,6 +69,12 @@ transaction ConfirmPropertySale {
   --> PropertySaleListing listing
 }
 
+transaction ValuateProperty {
+  --> Property property
+  --> Lender evaluator
+  o Double amount
+}
+
 transaction ValidateMortgage {
   --> Lender lender
   --> PropertySaleListing listing
