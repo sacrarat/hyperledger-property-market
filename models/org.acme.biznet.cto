@@ -76,6 +76,7 @@ transaction ValuateProperty {
 }
 
 transaction ValidateMortgage {
+  --> Person mortgageApplier
   --> Lender lender
   --> PropertySaleListing listing
 }
