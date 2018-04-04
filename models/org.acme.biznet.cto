@@ -42,8 +42,9 @@ asset MortgageAgreement identified by mortgageID {
   o Double amount
   --> Person borrower
   --> Lender lender
+  --> Property property
   o String details
-  o DateTime date
+  // o DateTime date
 }
 
 participant Person identified by personID {
@@ -75,7 +76,7 @@ transaction ValuateProperty {
   o Double amount
 }
 
-transaction ValidateMortgage {
+transaction ValidateAndCalculateMortgage {
   --> Person mortgageApplier
   --> Lender lender
   --> PropertySaleListing listing
@@ -83,8 +84,7 @@ transaction ValidateMortgage {
 
 transaction ConfirmMortgage {
   o String details
-  o Boolean valid
-  o Double amount
+  --> Person mortgageApplier
   --> Lender lender
   --> PropertySaleListing listing
 }
