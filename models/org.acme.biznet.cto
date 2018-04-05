@@ -59,7 +59,6 @@ participant Lender extends Person {
 }
 
 transaction RegisterForSale {
-  o String saleRegistrationID
   --> Property property
   --> Person seller
   o Double askingPrice
