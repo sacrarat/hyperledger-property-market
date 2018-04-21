@@ -3,7 +3,7 @@
  */
 
 rule R1 {
-  description: "Property owner can only update or delete a property"
+  description: "Cannot create, update or delete a property if not Property owner"
   participant (m): "org.acme.biznet.Person"
   operation: CREATE, UPDATE, DELETE
   resource(v) : "org.acme.biznet.Property"
@@ -28,38 +28,160 @@ rule R3 {
 }
 
 rule R4 {
-  description: "Lender can do everything with mortgage valuation"
-  participant: "org.acme.biznet.Lender"
-  operation: ALL
-  resource: "org.acme.biznet.MortgageValuation"
+  description: "Lender can do everything with mortgage valuation only if he is owner"
+  participant (m): "org.acme.biznet.Lender"
+  operation: CREATE, UPDATE, DELETE
+  resource (v): "org.acme.biznet.MortgageValuation"
+  condition:  (v.getIdentifier()==m.evaluator.getIdentifier())
   action: ALLOW
 }
 
 rule R5 {
-  description: "Property owner can create sale registration"
+  description: "Property owner can create,update,delete sale registration"
   participant(m): "org.acme.biznet.Person"
-  operation: ALL
+  operation: CREATE,UPDATE, DELETE
   resource (v): "org.acme.biznet.PropertySaleListing"
   condition: (v.propertyOnSale.currentOwner.getIdentifier()==m.getIdentifier())
   action: ALLOW
 }
 
-// not sure if needed
-// rule R6 {
-//   description: "Every Person can read properties"
-//   participant: "org.acme.biznet.Person"
-//   operation: READ
-//   resource : "org.acme.biznet.Property"
-//   action: ALLOW
-// }
-
-rule Default {
-  description: "Allow all participants access to all resources"
-  participant: "ANY"
-  operation: ALL
-  resource: "org.acme.biznet.*"
+rule R6 {
+  description: "All persons can read all sale registrations"
+  participant: "org.acme.biznet.Person"
+  operation: READ
+  resource: "org.acme.biznet.PropertySaleListing"
   action: ALLOW
 }
+
+rule R7 {
+  description: "All persons can read all properties"
+  participant: "org.acme.biznet.Person"
+  operation: READ
+  resource: "org.acme.biznet.Property"
+  action: ALLOW
+}
+
+rule R8 {
+  description: "Lender can do everything with mortgage agreement only if he is owner"
+  participant (m): "org.acme.biznet.Lender"
+  operation: ALL
+  resource (v): "org.acme.biznet.MortgageAgreement"
+  condition:  (v.getIdentifier()==m.evaluator.getIdentifier())
+  action: ALLOW
+}
+
+rule R9 {
+  description: "Property owner can create,update,delete sale agreement"
+  participant(m): "org.acme.biznet.Person"
+  operation: CREATE,UPDATE,DELETE,READ
+  resource (v): "org.acme.biznet.SaleAgreement"
+  condition: (v.listing.propertyOnSale.currentOwner.getIdentifier()==m.getIdentifier())
+  action: ALLOW
+}
+
+rule R10 {
+  description: "Lender can do everything with mortgage agreement only if he is owner"
+  participant (m): "org.acme.biznet.Lender"
+  operation: ALL
+  resource (v): "org.acme.biznet.MortgageAgreement"
+  condition:  (v.getIdentifier()==m.evaluator.getIdentifier())
+  action: ALLOW
+}
+
+rule R11 {
+  description: "All lenders can read all mortgage valuations"
+  participant: "org.acme.biznet.Lender"
+  operation: READ
+  resource: "org.acme.biznet.MortgageValuation"
+  action: ALLOW
+}
+
+rule R12 {
+  description: "All persons can read all mortgage valuations"
+  participant: "org.acme.biznet.Person"
+  operation: READ
+  resource: "org.acme.biznet.MortgageValuation"
+  action: ALLOW
+}
+
+rule R13 {
+    description: "Enable persons to submit registerForSale transactions if they are the sellers"
+    participant (m): "org.acme.biznet.Person"
+    operation: CREATE,UPDATE,DELETE
+    resource (v): "org.acme.biznet.RegisterForSale"
+    condition: (m.getIdentifier()==v.seller.getIdentifier())
+    action: ALLOW
+}
+
+rule R14 {
+  description: "Person should be able to see the history of their own transactions only"
+  participant(m): "org.acme.biznet.Person"
+  operation: READ
+  resource(v): "org.hyperledger.composer.system.HistorianRecord"
+  condition: (v.participantInvoking.getIdentifier() != m.getIdentifier())
+  action: DENY
+}
+
+rule R15 {
+    description: "Enable persons to submit ConfirmPropertySale transactions if they are the sellers"
+    participant (m): "org.acme.biznet.Person"
+    operation: ALL
+    resource (v): "org.acme.biznet.ConfirmPropertySale"
+    condition: (m.getIdentifier()==v.listing.seller.getIdentifier())
+    action: ALLOW
+}
+
+rule R16 {
+    description: "Enable persons to submit ValuateProperty transactions if they are the lenders"
+    participant (m): "org.acme.biznet.Lender"
+    operation: ALL
+    resource (v): "org.acme.biznet.ValuateProperty"
+    condition: (m.getIdentifier()==v.evaluator.getIdentifier())
+    action: ALLOW
+}
+
+rule R17 {
+    description: "Enable persons to read ValuateProperty transactions"
+    participant: "org.acme.biznet.Person"
+    operation: READ
+    resource: "org.acme.biznet.ValuateProperty"
+    action: ALLOW
+}
+
+rule R18 { //TODO not sure what the logical access for this should be
+    description: "Enable persons to submit ValidateAndCalculateMortgage transactions"
+    participant: "org.acme.biznet.Person"
+    operation: ALL
+    resource: "org.acme.biznet.ValidateAndCalculateMortgage"
+    action: ALLOW
+}
+
+rule R19 { //TODO not sure what the logical access for this should be
+    description: "Enable persons to submit ConfirmMortgage transactions if they are the sellers"
+    participant: "org.acme.biznet.Lender"
+    operation: ALL
+    resource: "org.acme.biznet.ConfirmMortgage"
+    action: ALLOW
+}
+
+rule R20 { //TODO not sure what the logical access for this should be
+    description: "Enable persons to submit ConfirmMortgage transactions if they are the sellers"
+    participant: "org.acme.biznet.Person"
+    operation: ALL
+    resource: "org.acme.biznet.ConfirmMortgage"
+    action: ALLOW
+}
+
+
+
+
+// rule Default {
+//   description: "Allow all participants access to all resources"
+//   participant: "ANY"
+//   operation: ALL
+//   resource: "org.acme.biznet.*"
+//   action: ALLOW
+// }
 
 rule SystemACL {
   description:  "System ACL to permit all access"
