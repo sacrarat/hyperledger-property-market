@@ -84,7 +84,7 @@ rule R10 {
   participant (m): "org.acme.biznet.Lender"
   operation: ALL
   resource (v): "org.acme.biznet.MortgageAgreement"
-  condition:  (v.getIdentifier()==m.evaluator.getIdentifier())
+  condition:  (m.getIdentifier()==v.lender.getIdentifier())
   action: ALLOW
 }
 
@@ -105,15 +105,6 @@ rule R12 {
 }
 
 rule R13 {
-    description: "Enable persons to submit registerForSale transactions if they are the sellers"
-    participant (m): "org.acme.biznet.Person"
-    operation: CREATE,UPDATE,DELETE
-    resource (v): "org.acme.biznet.RegisterForSale"
-    condition: (m.getIdentifier()==v.seller.getIdentifier())
-    action: ALLOW
-}
-
-rule R14 {
   description: "Person should be able to see the history of their own transactions only"
   participant(m): "org.acme.biznet.Person"
   operation: READ
@@ -121,6 +112,17 @@ rule R14 {
   condition: (v.participantInvoking.getIdentifier() != m.getIdentifier())
   action: DENY
 }
+
+
+rule R14 {
+    description: "Enable persons to submit registerForSale transactions if they are the sellers"
+    participant (m): "org.acme.biznet.Person"
+    operation: ALL
+    resource (v): "org.acme.biznet.RegisterForSale"
+    condition: (m.getIdentifier()==v.seller.getIdentifier())
+    action: ALLOW
+}
+
 
 rule R15 {
     description: "Enable persons to submit ConfirmPropertySale transactions if they are the sellers"
@@ -132,7 +134,7 @@ rule R15 {
 }
 
 rule R16 {
-    description: "Enable persons to submit ValuateProperty transactions if they are the lenders"
+    description: "Enable lenders to submit ValuateProperty transactions if they are the lenders"
     participant (m): "org.acme.biznet.Lender"
     operation: ALL
     resource (v): "org.acme.biznet.ValuateProperty"
@@ -157,7 +159,7 @@ rule R18 { //TODO not sure what the logical access for this should be
 }
 
 rule R19 { //TODO not sure what the logical access for this should be
-    description: "Enable persons to submit ConfirmMortgage transactions if they are the sellers"
+    description: "Enable lenders to submit ConfirmMortgage transactions "
     participant: "org.acme.biznet.Lender"
     operation: ALL
     resource: "org.acme.biznet.ConfirmMortgage"
@@ -165,7 +167,7 @@ rule R19 { //TODO not sure what the logical access for this should be
 }
 
 rule R20 { //TODO not sure what the logical access for this should be
-    description: "Enable persons to submit ConfirmMortgage transactions if they are the sellers"
+    description: "Enable persons to submit ConfirmMortgage transactions "
     participant: "org.acme.biznet.Person"
     operation: ALL
     resource: "org.acme.biznet.ConfirmMortgage"
